@@ -1,0 +1,9 @@
+expname: SMPL
+objpath: ./collisions/SMPL_Ap.obj
+optimizer: MomentumBrake
+lr: 0.001
+savepath: ./results
+max_collisions: 8
+energy: signed_TPE_verts
+constraints:
+  - curvature
