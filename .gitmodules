@@ -1,3 +1,6 @@
-[submodule "torch-mesh-isect"]
-	path = torch-mesh-isect
-	url = https://github.com/vchoutas/torch-mesh-isect.git
+[submodule "externals/cuda-samples"]
+	path = externals/cuda-samples
+	url = https://github.com/NVIDIA/cuda-samples.git
+[submodule "externals/torch-mesh-isect"]
+	path = externals/torch-mesh-isect
+	url = https://github.com/wonjongg/torch-mesh-isect
