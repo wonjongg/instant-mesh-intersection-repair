@@ -1,0 +1,3 @@
+[submodule "torch-mesh-isect"]
+	path = torch-mesh-isect
+	url = https://github.com/vchoutas/torch-mesh-isect.git

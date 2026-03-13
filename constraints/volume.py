@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 import torch
 
 def total_volume(vertices: torch.Tensor, faces: torch.Tensor) -> torch.Tensor:

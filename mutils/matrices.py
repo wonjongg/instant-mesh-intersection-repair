@@ -13,38 +13,32 @@ def spdiags(input):
 def block_diagonal(A, num_blocks=3):
     """
     A: N x N sparse tensor
-    num_blocks: 블록의 개수 (여기서는 3)
-    반환: (N*num_blocks) x (N*num_blocks) sparse tensor
+    num_blocks
+    return: (N*num_blocks) x (N*num_blocks) sparse tensor
     """
     N = A.size(0)
     assert A.size(0) == A.size(1), "Input matrix must be square"
 
-    # A가 이미 sparse가 아니라면 sparse로 변환
     if not A.is_sparse:
         A = A.to_sparse()
 
-    # A의 indices와 values 가져오기
     indices = A.indices()
     values = A.values()
 
-    # 새로운 indices 생성
     new_indices = []
     new_values = []
 
     for i in range(num_blocks):
-        # 각 블록에 대해 indices 조정
         block_indices = indices.clone()
-        block_indices[0, :] += i * N  # 행 인덱스 조정
-        block_indices[1, :] += i * N  # 열 인덱스 조정
+        block_indices[0, :] += i * N  
+        block_indices[1, :] += i * N 
 
         new_indices.append(block_indices)
         new_values.append(values)
 
-    # 모든 블록의 indices와 values 합치기
     final_indices = torch.cat(new_indices, dim=1)
     final_values = torch.cat(new_values)
 
-    # 새로운 sparse tensor 생성
     result = torch.sparse_coo_tensor(
         final_indices,
         final_values,

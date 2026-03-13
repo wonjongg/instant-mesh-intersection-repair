@@ -1,15 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import os
 import time
-import random
 import argparse
-import numpy as np
 import torch
 import potpourri3d as pp3d
-
-from glob import glob 
 
 from mesh_intersection.bvh_search_tree import BVH
 
@@ -74,10 +69,6 @@ def main(config):
         collision_idxs = search_tree(triangles.unsqueeze(0)).squeeze(0)
         collision_idxs = collision_idxs[collision_idxs[:, 0] >= 0, :]
 
-
-    if config['timing']:
-        torch.cuda.synchronize()
-        start = time.time()
     for i in range(60):
         optimizer.zero_grad()
         vertices = from_differential(M, u, 'Cholesky')

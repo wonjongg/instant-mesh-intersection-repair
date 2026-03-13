@@ -1,15 +1,8 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 import torch
-import numpy as np
 
 class MomentumBrake(torch.optim.Optimizer):
     """
-    Variant of Adam with uniform scaling by the second moment.
-
-    Instead of dividing each component by the square root of its second moment,
-    we divide all of them by the max.
+    MomentumBrake
     """
     def __init__(self, params, lr=0.1, betas=(0.99,0.999)):
         defaults = dict(lr=lr, betas=betas)

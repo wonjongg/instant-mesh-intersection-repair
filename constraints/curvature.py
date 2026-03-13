@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 import torch
 
 def meancurv_jacobian(lap, verts, u):
