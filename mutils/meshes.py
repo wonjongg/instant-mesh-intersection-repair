@@ -1,23 +1,60 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+"""
+Mesh processing utilities for geometric calculations and transformations.
+"""
+
 import torch
-import numpy as np 
+import numpy as np
 import potpourri3d as pp3d
 from scipy import sparse
 
+
 def quad_to_tri(faces):
+    """
+    Convert quad faces to triangle faces.
+
+    Splits each quad (4 vertices) into two triangles by connecting
+    vertices (0,1,2) and (0,2,3).
+
+    Args:
+        faces (np.ndarray): Quad face indices of shape (F, 4)
+
+    Returns:
+        np.ndarray: Triangle face indices of shape (2*F, 3)
+    """
+    # Extract vertex indices
     f0, f1, f2, f3 = faces[:, 0], faces[:, 1], faces[:, 2], faces[:, 3]
 
+    # Create two triangles per quad
     tri1 = np.stack([f0, f1, f2], axis=1)
     tri2 = np.stack([f0, f2, f3], axis=1)
 
+    # Concatenate all triangles
     tris = np.concatenate([tri1, tri2], axis=0)
-    
+
     return tris
 
+
 def cotan_laplacian(verts, faces):
+    """
+    Compute the cotangent Laplacian matrix for a triangulated mesh.
+
+    The cotangent Laplacian is a discrete approximation of the Laplace-Beltrami
+    operator that uses cotangent weights based on the mesh geometry.
+
+    Args:
+        verts (np.ndarray): Vertex positions of shape (V, 3)
+        faces (np.ndarray): Face indices of shape (F, 3)
+
+    Returns:
+        torch.sparse.Tensor: Sparse cotangent Laplacian matrix of shape (V, V)
+    """
+    # Compute cotangent Laplacian using potpourri3d
     lap = pp3d.cotan_laplacian(verts, faces)
+
+    # Convert scipy sparse matrix to PyTorch sparse tensor
     coo = lap.tocoo()
     indices = np.vstack((coo.row, coo.col))
     values = coo.data
@@ -28,22 +65,31 @@ def cotan_laplacian(verts, faces):
 
     return lap
 
+
 def triangle_vertex_incidence_matrix(verts, faces):
-    '''
+    """
+    Compute the triangle-vertex incidence matrix.
+
+    Each row corresponds to a face, and each column to a vertex.
+    Values are 1/3 for vertices belonging to a face, 0 otherwise.
+
     Args:
-        verts (np.ndarray, shape of (#V, 3))
-        faces (np.ndarray, shape of (#F, 3))
+        verts (np.ndarray): Vertex positions of shape (V, 3)
+        faces (np.ndarray): Face indices of shape (F, 3)
 
     Returns:
-        B (np.ndarray, shape of (#F, #V))
-    '''
+        np.ndarray: Incidence matrix of shape (F, V)
+    """
     num_verts = len(verts)
     num_faces = len(faces)
 
+    # Initialize incidence matrix
     B = np.zeros((num_faces, num_verts))
 
+    # Each face contributes 1/3 to each of its three vertices
     values = np.full(faces.shape, 1/3)
 
+    # Use advanced indexing to populate the matrix
     np.add.at(B, (np.repeat(np.arange(num_faces), 3), faces.flatten()), values.flatten())
 
     return B
@@ -126,26 +172,39 @@ def vertex_normals(face_normals, face_attributes, vertices, faces, method='angle
 
 def vertex_angles(vertices, faces):
     """
-    Vectorized computation of angles at each vertex.
+    Compute angles at each vertex of each face.
+
+    For each triangle, computes the three interior angles using the
+    law of cosines based on edge lengths.
+
+    Args:
+        vertices (torch.Tensor): Vertex positions of shape (V, 3)
+        faces (torch.Tensor): Face indices of shape (F, 3)
+
+    Returns:
+        torch.Tensor: Angles at each vertex of shape (F, 3) in radians
     """
     # Get vertices for each face (F, 3, 3)
     face_vertices = vertices[faces]
-    
-    # Compute edge vectors
+
+    # Extract individual vertices
     v0, v1, v2 = face_vertices[:, 0], face_vertices[:, 1], face_vertices[:, 2]
-    e0 = v1 - v0  # (F, 3)
-    e1 = v2 - v1  # (F, 3)
-    e2 = v0 - v2  # (F, 3)
-    
-    # Normalize edge vectors
+
+    # Compute edge vectors
+    e0 = v1 - v0  # Edge from v0 to v1
+    e1 = v2 - v1  # Edge from v1 to v2
+    e2 = v0 - v2  # Edge from v2 to v0
+
+    # Normalize edge vectors for angle computation
     e0_norm = torch.nn.functional.normalize(e0, p=2, dim=1)
     e1_norm = torch.nn.functional.normalize(e1, p=2, dim=1)
     e2_norm = torch.nn.functional.normalize(e2, p=2, dim=1)
-    
-    # Compute all angles at once
+
+    # Compute angles using dot product and arccos
+    # Clamp to [-1, 1] to handle numerical errors
     angles = torch.empty((faces.shape[0], 3)).type_as(vertices)
-    angles[:, 0] = torch.acos(torch.clamp(-torch.sum(e0_norm * e2_norm, dim=1), -1.0, 1.0))
-    angles[:, 1] = torch.acos(torch.clamp(-torch.sum(e1_norm * e0_norm, dim=1), -1.0, 1.0))
-    angles[:, 2] = torch.acos(torch.clamp(-torch.sum(e2_norm * e1_norm, dim=1), -1.0, 1.0))
-    
+    angles[:, 0] = torch.acos(torch.clamp(-torch.sum(e0_norm * e2_norm, dim=1), -1.0, 1.0))  # Angle at v0
+    angles[:, 1] = torch.acos(torch.clamp(-torch.sum(e1_norm * e0_norm, dim=1), -1.0, 1.0))  # Angle at v1
+    angles[:, 2] = torch.acos(torch.clamp(-torch.sum(e2_norm * e1_norm, dim=1), -1.0, 1.0))  # Angle at v2
+
     return angles
