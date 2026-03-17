@@ -1,0 +1,7 @@
+torch>=2.0.0
+numpy
+scipy
+PyYAML
+potpourri3d
+polyscope
+cholespy

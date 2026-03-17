@@ -10,14 +10,55 @@ This repository contains the official implementation of the following paper:
 - March 17, 2026: Add interactive Polyscope visualization (`--vis` flag)
 - August 13, 2025: Release initial version
 
+## Installation
+
+### 1. Clone the repository
+
+```bash
+git clone --recursive https://github.com/wonjongg/instant-mesh-intersection-repair.git
+cd instant-mesh-intersection-repair
+```
+
+The `--recursive` flag is required to fetch the two submodules under `externals/`:
+- `externals/torch-mesh-isect` — CUDA BVH collision detection module
+- `externals/cuda-samples` — provides the `helper_math.h` header needed to build the above
+
+### 2. Install Python dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+### 3. Install torch-mesh-isect
+
+This step requires building a CUDA extension and is the most environment-sensitive part of the setup.
+
+**Set the `CUDA_SAMPLES_INC` environment variable** to the directory containing `helper_math.h` from the cuda-samples submodule:
+
+```bash
+export CUDA_SAMPLES_INC=$(pwd)/externals/cuda-samples/Common
+```
+
+Then build and install the included submodule:
+
+```bash
+cd externals/torch-mesh-isect
+python setup.py install
+cd ../..
+```
+
+> **Note for users with modern GPUs or recent CUDA versions (CUDA 11+)**
+>
+> The original `torch-mesh-isect` may fail to compile on newer toolchains. The submodule at `externals/torch-mesh-isect` is a fork with fixes for modern environments. If you encounter build errors, please refer to its repository at [github.com/wonjongg/torch-mesh-isect](https://github.com/wonjongg/torch-mesh-isect) and follow the installation guide there carefully.
+
 ## Requirements
 
 - Python 3.x
 - PyTorch (with CUDA)
 - [potpourri3d](https://github.com/nmwsharp/potpourri3d)
 - [polyscope](https://polyscope.run/py/) *(required only for `--vis` mode)*
-- [largesteps](https://github.com/rgl-epfl/large-steps-pytorch)
-- [torch-mesh-isect](https://github.com/vchoutas/torch-mesh-isect) *(included as submodule under `externals/`)*
+- [cholespy](https://github.com/rgl-epfl/cholespy)
+- [torch-mesh-isect](https://github.com/wonjongg/torch-mesh-isect) *(included as submodule under `externals/`)*
 
 ## Usage
 
