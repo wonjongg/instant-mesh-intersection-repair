@@ -161,3 +161,19 @@ Best and final meshes are saved to `savepath` when all steps complete or when th
 ## Benchmark data
 
 Please contact wonjong@postech.ac.kr to request our benchmark data
+
+## Citation
+
+If you use this code for academic research, please cite our method using the following BibTex entry:
+
+```bibtex
+@article{Jang2025Instant,
+    author = {Jang, Wonjong and Jung, Yucheol and Lee, Gyeongmin and Lee, Seungyong},
+    title = {Instant Self-Intersection Repair for 3D Meshes},
+    journal = {ACM Transactions on Graphics (Proceedings of ACM SIGGRAPH)},
+    volume = {40},
+    number = {6},
+    year = {2021},
+}
+```
+```
