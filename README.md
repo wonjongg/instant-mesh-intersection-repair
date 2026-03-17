@@ -7,8 +7,8 @@ This repository contains the official implementation of the following paper:
 
 ## Update log
 
-March 17, 2026: Add interactive Polyscope visualization (`--vis` flag)
-August 13, 2025: Release initial version
+- March 17, 2026: Add interactive Polyscope visualization (`--vis` flag)
+- August 13, 2025: Release initial version
 
 ## Requirements
 
