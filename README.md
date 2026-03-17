@@ -43,6 +43,7 @@ Then build and install the included submodule:
 
 ```bash
 cd externals/torch-mesh-isect
+pip install -r requirements.txt
 python setup.py install
 cd ../..
 ```
