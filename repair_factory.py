@@ -279,11 +279,16 @@ def main_vis(config):
             np.add.at(mask, cf, 1.0)
         return mask
 
+    def _update_collision_overlay(col_idxs):
+        """Update the per-face collision scalar: red when intersections exist, green when resolved."""
+        cmap = 'greens' if col_idxs.shape[0] == 0 else 'reds'
+        ps_mesh.add_scalar_quantity(
+            "collisions", _collision_mask(col_idxs),
+            defined_on='faces', enabled=True, cmap=cmap
+        )
+
     # Show initial collision state
-    ps_mesh.add_scalar_quantity(
-        "collisions", _collision_mask(init_col_idx),
-        defined_on='faces', enabled=True, cmap='reds'
-    )
+    _update_collision_overlay(init_col_idx)
 
     # ---- Single optimization step ----
     def do_step():
@@ -345,10 +350,7 @@ def main_vis(config):
 
         # Refresh polyscope mesh and collision overlay
         ps_mesh.update_vertex_positions(verts_new.detach().cpu().numpy())
-        ps_mesh.add_scalar_quantity(
-            "collisions", _collision_mask(col_idxs),
-            defined_on='faces', enabled=True, cmap='reds'
-        )
+        _update_collision_overlay(col_idxs)
 
         print(f'Step {state["step"]:3d}/{MAX_STEPS}  '
               f'pen={pen_loss.item():.6f}  reg={reg_loss.item():.6f}  col={num_col}')
