@@ -21,14 +21,43 @@ August 13, 2025: Release initial version
 
 ## Usage
 
+### Quick start with toy data
+
+A set of self-intersecting toy meshes is included under `data/misc/` along with a ready-to-use config:
+
+| Mesh | File |
+|---|---|
+| Celtic knot | `celtic_knot.obj` |
+| Cinquefoil knot | `cinquefoil_knot.obj` |
+| Disc Klein bottle | `disc_kleinbottle.obj` |
+| Figure-of-eight knot | `figure_of_eight_knot.obj` |
+| Knot 8-18 | `knot_8_18.obj` |
+| Möbius strip | `mobius_strip.obj` |
+| Pretzel | `pretzel.obj` |
+| Septoil knot | `septoil_knot.obj` |
+| Three-twist knot | `three_twist_knot.obj` |
+| Trefoil knot | `trefoil_knot.obj` |
+
+Run the Celtic knot example (default in `configs/misc.yaml`):
+
+```bash
+# Headless
+python repair_factory.py --config configs/misc.yaml
+
+# With interactive visualization
+python repair_factory.py --config configs/misc.yaml --vis
+```
+
+To try a different mesh, edit the `objpath` field in `configs/misc.yaml`.
+
 ### Configuration
 
-Experiments are configured via YAML files. Example (`configs/smpl_1.yaml`):
+Experiments are configured via YAML files. Example (`configs/misc.yaml`):
 
 ```yaml
-expname: SMPL
-objpath: ./collisions/SMPL_Ap.obj
-optimizer: MomentumBrake
+expname: misc
+objpath: ./data/misc/celtic_knot.obj
+optimizer: GD
 lr: 0.001
 savepath: ./results
 max_collisions: 8
@@ -45,7 +74,6 @@ constraints:
 | `objpath` | path | Input mesh (`.obj`), triangles or quads |
 | `savepath` | path | Directory for output meshes |
 | `max_collisions` | int | Max BVH collision pairs to detect per query |
-| `lap` | `cotan`, `curv` | Laplacian type for parameterization |
 | `optimizer` | `Adam`, `GD`, `MomentumBrake`, `AdamUniform` | Optimizer |
 | `lr` | float | Learning rate |
 | `energy` | `signed_TPE`, `signed_TPE_verts`, `TPE`, `p2plane`, `conical` | Penetration energy |
@@ -55,10 +83,10 @@ constraints:
 
 ```bash
 # Headless (saves intermediate .obj files every 10 steps + best/final)
-python repair_factory.py --config configs/smpl_1.yaml
+python repair_factory.py --config configs/your_config.yaml
 
 # Interactive visualization
-python repair_factory.py --config configs/smpl_1.yaml --vis
+python repair_factory.py --config configs/your_config.yaml --vis
 ```
 
 ### Interactive visualization (`--vis`)

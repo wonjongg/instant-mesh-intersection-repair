@@ -11,6 +11,7 @@ parameterization.
 
 import time
 import argparse
+from pathlib import Path
 import numpy as np
 import torch
 import potpourri3d as pp3d
@@ -42,7 +43,6 @@ def main(config):
             - savepath (str): Directory to save output meshes
             - expname (str): Experiment name for output files
             - max_collisions (int): Maximum number of collisions to detect
-            - lap (str): Laplacian type ('cotan' or 'curv')
             - optimizer (str): Optimizer type ('Adam', 'GD', 'MomentumBrake', 'AdamUniform')
             - lr (float): Learning rate
             - energy (str): Energy function type ('signed_TPE', 'signed_TPE_verts', 'TPE', 'p2plane', 'conical')
@@ -51,6 +51,9 @@ def main(config):
     Returns:
         None: Saves intermediate and final mesh files to disk.
     """
+    # Ensure output directory exists
+    Path(config['savepath']).mkdir(parents=True, exist_ok=True)
+
     # Load mesh and normalize it
     np_v, np_f = pp3d.read_mesh(config['objpath'])
     v_range = np_v.max() - np_v.min()
@@ -74,12 +77,7 @@ def main(config):
     search_tree = BVH(max_collisions=config['max_collisions'])
 
     # Compute Laplacian matrix based on specified type
-    if config['lap'] == 'cotan':
-        lap = mutils.cotan_laplacian(np_v, np_f).float().cuda()
-    elif config['lap'] == 'curv':
-        lap = mutils.curv_laplacian(np_v, np_f).float().cuda()
-    else:
-        raise NotImplementedError(f'Not implemented Laplacian type: {config["lap"]}')
+    lap = mutils.cotan_laplacian(np_v, np_f).float().cuda()
 
     # Compute parameterization matrix M = (1-alpha)*I + alpha*L
     M = compute_matrix_from_lap(lap, vertices, lambda_=0, alpha=0.99)
@@ -205,6 +203,9 @@ def main_vis(config):
 
     MAX_STEPS = 60
 
+    # Ensure output directory exists
+    Path(config['savepath']).mkdir(parents=True, exist_ok=True)
+
     # ---- Load and normalize mesh ----
     np_v, np_f = pp3d.read_mesh(config['objpath'])
     v_range = np_v.max() - np_v.min()
@@ -220,12 +221,7 @@ def main_vis(config):
     search_tree = BVH(max_collisions=config['max_collisions'])
 
     # ---- Laplacian ----
-    if config['lap'] == 'cotan':
-        lap = mutils.cotan_laplacian(np_v, np_f).float().to(device)
-    elif config['lap'] == 'curv':
-        lap = mutils.curv_laplacian(np_v, np_f).float().to(device)
-    else:
-        raise NotImplementedError(f'Not implemented Laplacian type: {config["lap"]}')
+    lap = mutils.cotan_laplacian(np_v, np_f).float().to(device)
 
     M = compute_matrix_from_lap(lap, vertices, lambda_=0, alpha=0.99)
     u = to_differential(M, vertices)
@@ -269,6 +265,7 @@ def main_vis(config):
 
     # ---- Polyscope initialisation ----
     ps.init()
+    ps.set_ground_plane_mode("none")
     ps_mesh = ps.register_surface_mesh(
         "mesh", np_v, np_f, smooth_shade=True, enabled=True
     )
