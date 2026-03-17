@@ -29,7 +29,7 @@ A set of self-intersecting toy meshes is included under `data/misc/` along with 
 |---|---|
 | Celtic knot | `celtic_knot.obj` |
 | Cinquefoil knot | `cinquefoil_knot.obj` |
-| Disc Klein bottle | `disc_kleinbottle.obj` |
+| Disconnected Klein bottle | `disc_kleinbottle.obj` |
 | Figure-of-eight knot | `figure_of_eight_knot.obj` |
 | Knot 8-18 | `knot_8_18.obj` |
 | Möbius strip | `mobius_strip.obj` |
