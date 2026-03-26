@@ -173,6 +173,7 @@ Please contact wonjong@postech.ac.kr to request our benchmark data
 
 ## Update log
 
+- March 26, 2026: Minor bug fixes (polyscope colormap and num_iters) and upload demo videos
 - March 17, 2026: Add interactive Polyscope visualization (`--vis` flag)
 - August 13, 2025: Release initial version
 
