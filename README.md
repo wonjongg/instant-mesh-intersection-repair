@@ -185,8 +185,8 @@ If you use this code for academic research, please cite our method using the fol
     author = {Jang, Wonjong and Jung, Yucheol and Lee, Gyeongmin and Lee, Seungyong},
     title = {Instant Self-Intersection Repair for 3D Meshes},
     journal = {ACM Transactions on Graphics (Proceedings of ACM SIGGRAPH)},
-    volume = {40},
-    number = {6},
-    year = {2021},
+    volume = {44},
+    number = {4},
+    year = {2025},
 }
 ```
