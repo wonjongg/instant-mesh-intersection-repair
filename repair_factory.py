@@ -118,7 +118,7 @@ def main(config):
     fname = config['expname']
 
     # Optimization loop
-    for i in range(60):
+    for i in range(config['num_iters']):
         optimizer.zero_grad()
 
         # Convert from differential to Cartesian coordinates
@@ -169,6 +169,11 @@ def main(config):
             print(f'Iteration {i+1}: Penetration Loss = {pen_loss.item():.6f}, Regularization Loss = {reg_loss.item():.6f}, Collisions = {num_col}')
             with torch.no_grad():
                 pp3d.write_mesh(vertices.detach().cpu().numpy(), np_f, f'{config["savepath"]}/{config["expname"]}_{(i+1):03d}.obj')
+
+        # Stop early when all collisions are resolved
+        if num_col == 0:
+            print(f'\nAll collisions resolved at iteration {i+1}. Stopping early.')
+            break
 
     # Save final results
     print(f'\nOptimization complete. Best solution found at iteration {best_iter} with {best_col} collisions.')
@@ -355,11 +360,12 @@ def main_vis(config):
         print(f'Step {state["step"]:3d}/{MAX_STEPS}  '
               f'pen={pen_loss.item():.6f}  reg={reg_loss.item():.6f}  col={num_col}')
 
-        # Mark done and save when all steps are finished
-        if state['step'] >= MAX_STEPS:
+        # Mark done and save when all collisions are resolved or max steps reached
+        if num_col == 0 or state['step'] >= MAX_STEPS:
             state['done']    = True
             state['running'] = False
-            print(f'\nOptimization complete. '
+            reason = 'All collisions resolved' if num_col == 0 else 'Max steps reached'
+            print(f'\n{reason}. '
                   f'Best at step {state["best_iter"]} with {state["best_col"]} collisions.')
             _save_results()
 
