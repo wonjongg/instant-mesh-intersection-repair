@@ -281,7 +281,7 @@ def main_vis(config):
 
     def _update_collision_overlay(col_idxs):
         """Update the per-face collision scalar: red when intersections exist, green when resolved."""
-        cmap = 'greens' if col_idxs.shape[0] == 0 else 'reds'
+        cmap = 'blues' if col_idxs.shape[0] == 0 else 'reds'
         ps_mesh.add_scalar_quantity(
             "collisions", _collision_mask(col_idxs),
             defined_on='faces', enabled=True, cmap=cmap
