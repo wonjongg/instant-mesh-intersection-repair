@@ -149,6 +149,18 @@ The stats panel shows the current step, collision count, penetration loss, regul
 
 Best and final meshes are saved to `savepath` when all steps complete or when the window is closed after completion.
 
+### Demo
+
+The videos below show the `--vis` mode running on the Celtic knot mesh.
+
+**Step-by-step** — each iteration triggered manually with the Step button:
+
+<video src="assets/stepbystep.mp4" controls width="100%"></video>
+
+**Run** — all iterations executed automatically with the Run button:
+
+<video src="assets/run.mp4" controls width="100%"></video>
+
 ### Output files
 
 | File | Description |
