@@ -46,6 +46,7 @@ def main(config):
             - optimizer (str): Optimizer type ('Adam', 'GD', 'MomentumBrake', 'AdamUniform')
             - lr (float): Learning rate
             - energy (str): Energy function type ('signed_TPE', 'signed_TPE_verts', 'TPE', 'p2plane', 'conical')
+            - num_iters (int): Maximum number of optimization iterations
             - constraints (list): List of constraints to apply ('volume', 'area', 'curvature')
 
     Returns:
@@ -206,7 +207,7 @@ def main_vis(config):
     import polyscope as ps
     import polyscope.imgui as psim
 
-    MAX_STEPS = 60
+    MAX_STEPS = config['num_iters']
 
     # Ensure output directory exists
     Path(config['savepath']).mkdir(parents=True, exist_ok=True)
