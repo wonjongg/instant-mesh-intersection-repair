@@ -5,10 +5,17 @@ This repository contains the official implementation of the following paper:
 > **[Instant Self-Intersection Repair for 3D Meshes (ACM TOG 2025)](https://dl.acm.org/doi/10.1145/3731427)**<br>
 > Wonjong Jang, Yucheol Jung, Gyeongmin Lee, Seungyong Lee
 
-## Update log
+## Demo
 
-- March 17, 2026: Add interactive Polyscope visualization (`--vis` flag)
-- August 13, 2025: Release initial version
+The videos below show the `--vis` mode running on the Celtic knot mesh.
+
+**Step-by-step** — each iteration triggered manually with the Step button:
+
+<video src="https://github.com/wonjongg/instant-mesh-intersection-repair/raw/master/assets/stepbystep.mp4" controls width="100%"></video>
+
+**Run** — all iterations executed automatically with the Run button:
+
+<video src="https://github.com/wonjongg/instant-mesh-intersection-repair/raw/master/assets/run.mp4" controls width="100%"></video>
 
 ## Installation
 
@@ -103,6 +110,7 @@ optimizer: GD
 lr: 0.001
 savepath: ./results
 max_collisions: 8
+num_iters: 60
 energy: signed_TPE_verts
 constraints:
   - curvature
@@ -118,6 +126,7 @@ constraints:
 | `max_collisions` | int | Max BVH collision pairs to detect per query |
 | `optimizer` | `Adam`, `GD`, `MomentumBrake`, `AdamUniform` | Optimizer |
 | `lr` | float | Learning rate |
+| `num_iters` | int | Maximum number of optimization iterations (stops early if collisions reach 0) |
 | `energy` | `signed_TPE`, `signed_TPE_verts`, `TPE`, `p2plane`, `conical` | Penetration energy |
 | `constraints` | `volume`, `area`, `curvature` | Geometric regularization terms |
 
@@ -149,18 +158,6 @@ The stats panel shows the current step, collision count, penetration loss, regul
 
 Best and final meshes are saved to `savepath` when all steps complete or when the window is closed after completion.
 
-### Demo
-
-The videos below show the `--vis` mode running on the Celtic knot mesh.
-
-**Step-by-step** — each iteration triggered manually with the Step button:
-
-<video src="assets/stepbystep.mp4" controls width="100%"></video>
-
-**Run** — all iterations executed automatically with the Run button:
-
-<video src="assets/run.mp4" controls width="100%"></video>
-
 ### Output files
 
 | File | Description |
@@ -173,6 +170,11 @@ The videos below show the `--vis` mode running on the Celtic knot mesh.
 ## Benchmark data
 
 Please contact wonjong@postech.ac.kr to request our benchmark data
+
+## Update log
+
+- March 17, 2026: Add interactive Polyscope visualization (`--vis` flag)
+- August 13, 2025: Release initial version
 
 ## Citation
 
