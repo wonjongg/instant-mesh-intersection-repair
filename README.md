@@ -9,13 +9,13 @@ This repository contains the official implementation of the following paper:
 
 The videos below show the `--vis` mode running on the Celtic knot mesh.
 
-**Step-by-step** — each iteration triggered manually with the Step button:
-
-![Step-by-step demo](assets/stepbystep.gif)
-
 **Run** — all iterations executed automatically with the Run button:
 
 ![Run demo](assets/run.gif)
+
+**Step-by-step** — each iteration triggered manually with the Step button:
+
+![Step-by-step demo](assets/stepbystep.gif)
 
 ## Installation
 
